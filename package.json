@@ -8,5 +8,16 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@wdio/cli": "^7.16.13"
+  },
+  "devDependencies": {
+    "@wdio/local-runner": "^7.16.13",
+    "@wdio/mocha-framework": "^7.16.13",
+    "@wdio/spec-reporter": "^7.16.13",
+    "chromedriver": "^97.0.0",
+    "wdio-chromedriver-service": "^7.2.6",
+    "wdio-wait-for": "^2.2.1"
+  }
 }
