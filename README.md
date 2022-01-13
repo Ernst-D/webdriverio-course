@@ -1,46 +1,30 @@
-# webdriverio-course
+# WebdriverIO-course
+
+## Pre-requisites
+
+- NVM (Node Version Manager)
+    - [Unix](https://github.com/nvm-sh/nvm#installing-and-updating)
+    - [Windows](https://github.com/coreybutler/nvm-windows#installation--upgrades) 
+    
+    Install nvm and use active LTS version of nodejs. [More about lts versions](https://nodejs.org/en/about/releases/).
+    
+- [Visual Studio Code](https://code.visualstudio.com/)
 
 ## Table of Contents
 
-- [About](#about)
-- [Getting Started](#getting_started)
-- [Usage](#usage)
-- [Contributing](../CONTRIBUTING.md)
+- [Step1](#step1) 
 
-## About <a name = "about"></a>
+## Step1
 
-Write about 1-2 paragraphs describing the purpose of your project.
+First of all, make sure you're installed `nodejs` through `nvm`. In my case, I installed node 16.13.1 and made in default by command:
+    
+- Unix: `nvm alias default 16.13.1`
+- Windows: `nvm use 16.13.1`
 
-## Getting Started <a name = "getting_started"></a>
+If everything is correct - init project with npm: `npm init -y`. Then, install WDIO-CLI: `npm i @wdio/cli -D`. 
+Check you CLI by `npx wdio --help`. If it shows an output of commands - great. 
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
+Lets create backbone for our test framework: `npx wdio config`. We gonna need to select some options: 
 
-### Prerequisites
+`local machine` -> `mocha` -> `no compiliers` -> just press Enter -> `Y` autogenerate some test files -> use Page Objects -> set default location for Page Objects -> use only `spec` reporter -> don't use `wait-for` lib, just press Enter -> use only `chromedriver` -> skip `baseUrl` setup
 
-What things you need to install the software and how to install them.
-
-```
-Give examples
-```
-
-### Installing
-
-A step by step series of examples that tell you how to get a development env running.
-
-Say what the step will be
-
-```
-Give the example
-```
-
-And repeat
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo.
-
-## Usage <a name = "usage"></a>
-
-Add notes about how to use the system.
