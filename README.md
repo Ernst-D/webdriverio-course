@@ -14,7 +14,7 @@
 
 - [Step1](#step1) 
 
-## Step1
+## Step1. Setup
 
 ### Localhost application
 
@@ -87,3 +87,90 @@ But if we take a look at screenshot - we will see that there is no pictures uplo
 
 So our can we consider that our test is flaky? Not actually, but we should wait until our page will be fully loaded. 
 We will fix this in a steps to come.
+
+## Step2. JS tooling
+
+In order to have efficient work we should have two thing: autocomplete and autocheck. 
+### Autocomplete: jsconfig
+
+First, autocomplete. In JS world it sometimes could be hard to achieve since JS "doesn't have" (only built-in types) type system and some IDEs itself doesn't know anything about the code of your project (TypeScript and its usage - its another topic). Due to the fact we're using VS Code for this course, we need to provide IDE info about created types that comes from some libraries. 
+
+Create `jsconfig.json` file in a root of the project and enter next content:
+
+```json
+{
+    "compilerOptions": {
+        "types": [
+            "node",
+            "webdriverio/async",
+            "@wdio/mocha-framework"
+        ]
+    }
+}
+```
+
+With this config we will provide types to IDE so every `js` file will know about these built in types.
+
+### Code format: eslint
+
+JS provide a lot of freedom how you can write your code. Semicolumns, single/double quotes, spaces in parameters. VS Code doesn't provide out of the box some features for code formatting.
+
+For JavaScript code formatting we will use [eslint](https://eslint.org/). 
+
+Run `npm install eslint --save-dev`. Then run `npm init @eslint/config`. 
+
+You gonna need to set a few answers durng the setup: 
+
+- How would you like to use ESLint? -> *To check syntax and find problems*, we don't need any code style int this project.
+- What type of modules does your project use? -> *JavaScript modules (import/export)*. We will use latest features of JavaScript language so better to use module syntax.
+- Which framework does your project use? -> *None of these*. It suggest us front-end frameworks, but our project is a nodejs project, so *none of these*.
+- Does your project use TypeScript? -> *No*. Not yet.
+- Where does your code run? -> *Node and Browser*. Even if we have nodejs project (our code runs in a nodejs), our is able to be evaluated in browser (WebDriver can execute js in a browser).
+- What format do you want your config file to be in? -> *JSON*. Doesn't actually, but for convinience (better for googling) we will use JSON.
+
+Great! We generated `.eslintrc.json`. Probably, your code will now be highlighted with red, but we will solve it. 
+
+First of all, install plugin for linter: `npm install eslint-plugin-wdio --save-dev`. Then, edit `extends` property to `["plugin:wdio/recommended"]` value and add `plugins` property with value `["wdio"]`. 
+
+Your config should looks like this:
+```json
+{
+    "env": {
+        "browser": true,
+        "es2021": true,
+        "node": true
+    },
+    "extends": ["plugin:wdio/recommended"],
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module"
+    },
+    "rules": {
+    },
+    "plugins": [
+        "wdio"
+    ]
+}
+```
+
+Then, lets add some `rules`. `Rules` helps us to have clean syntax and quickly format our code. For example, force us to use semicolons. Edit "rules" to the next look:
+```json
+"rules": {
+    "prefer-const":"off",
+    "no-console":"error",
+    "semi":"error",
+    "lines-between-class-members":["warn","always"],
+    "array-callback-return":"warn",
+    "func-call-spacing":["warn","never"],
+    "require-await":"error",
+    "arrow-spacing": ["warn", { "before": true, "after": true }]
+}
+```
+
+You can hover with your mouse and see, what some of these rules are actually do. 
+
+And then, finally, you can go to the files and apply *Quick fix*, or you run `npx eslint . --fix --ext .js` in terminal to apply rules to your code.
+
+## Extra: babel
+
+TBA.
