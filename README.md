@@ -73,7 +73,7 @@ describe("Test suite",()=>{
 
 Run this with next command
 ```shell
-npx wdio wdio.conf.js --spec ./test/specs/login
+npx wdio wdio.conf.js --spec ./test/specs/login.spec.js
 ```
 
 **NOTE:** If test will fail with invalid credentials - find valid one in `./data/database.json` and put in this line: 
@@ -81,3 +81,9 @@ npx wdio wdio.conf.js --spec ./test/specs/login
 await usernameInput.setValue("specific_username");
 ```
 
+Finally, we ran our first test! It should open the browser window, browser navigates to our localhost app, perform login and make screenshot of it.
+
+But if we take a look at screenshot - we will see that there is no pictures uploaded on a page. 
+
+So our can we consider that our test is flaky? Not actually, but we should wait until our page will be fully loaded. 
+We will fix this in a steps to come.
