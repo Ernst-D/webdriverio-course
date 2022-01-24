@@ -13,8 +13,10 @@
 ## Table of Contents
 
 - [Step1](#step1) 
+- [Step2](#step2) 
 
-## Step1. Setup
+
+<h2 id='step1'>Step1. Setup</h2>
 
 ### Localhost application
 
@@ -88,7 +90,7 @@ But if we take a look at screenshot - we will see that there is no pictures uplo
 So our can we consider that our test is flaky? Not actually, but we should wait until our page will be fully loaded. 
 We will fix this in a steps to come.
 
-## Step2. JS tooling
+<h2 id='step2'> Step2. Tooling </h2>
 
 Since we're going to create production-like solution: we better to use latest features of the language, we need to have autocomplete for our code and we need to stick by some rules for our code syntax.
 
