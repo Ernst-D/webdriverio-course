@@ -90,7 +90,8 @@ We will fix this in a steps to come.
 
 ## Step2. JS tooling
 
-In order to have efficient work we should have two thing: autocomplete and autocheck. 
+Since we're going to create production-like solution: we better to use latest features of the language, we need to have autocomplete for our code and we need to stick by some rules for our code syntax.
+
 ### Autocomplete: jsconfig
 
 First, autocomplete. In JS world it sometimes could be hard to achieve since JS "doesn't have" (only built-in types) type system and some IDEs itself doesn't know anything about the code of your project (TypeScript and its usage - its another topic). Due to the fact we're using VS Code for this course, we need to provide IDE info about created types that comes from some libraries. 
@@ -171,6 +172,29 @@ You can hover with your mouse and see, what some of these rules are actually do.
 
 And then, finally, you can go to the files and apply *Quick fix*, or you run `npx eslint . --fix --ext .js` in terminal to apply rules to your code.
 
-## Extra: babel
+## Transform: babel
 
-TBA.
+We can use [babel](https://babeljs.io/) to enable latest features of ECMAScript and [module syntax](https://nodejs.org/api/esm.html).
+
+First of all, lets install next packages:
+
+```shell
+npm install --save-dev @babel/core @babel/cli @babel/preset-env @babel/register
+```
+Then create `babel.config.js` which will transform our code to make it compatible for execution. 
+
+```js
+module.exports = {
+    presets: [
+        ['@babel/preset-env', {
+            targets: {
+                node: '16'
+            }
+        }]
+    ]
+}
+```
+
+After that we can convert our files to ES modules, just go to the `example.e2e.js` and imported files and convert them. 
+
+**NOTE:** We shall stay with ES modules because it will provide us the latest features of JS and also it can show us some specific situation when we had to use both versions of JS modules.
