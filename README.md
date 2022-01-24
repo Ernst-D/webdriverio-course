@@ -14,6 +14,7 @@
 
 - [Step1](#step1) 
 - [Step2](#step2) 
+- [Step3](#step3)
 
 
 <h2 id='step1'>Step1. Setup</h2>
@@ -89,6 +90,8 @@ But if we take a look at screenshot - we will see that there is no pictures uplo
 
 So our can we consider that our test is flaky? Not actually, but we should wait until our page will be fully loaded. 
 We will fix this in a steps to come.
+
+****
 
 <h2 id='step2'> Step2. Tooling </h2>
 
@@ -200,3 +203,9 @@ module.exports = {
 After that we can convert our files to ES modules, just go to the `example.e2e.js` and imported files and convert them. 
 
 **NOTE:** We shall stay with ES modules because it will provide us the latest features of JS and also it can show us some specific situation when we had to use both versions of JS modules.
+
+****
+
+<h2 id='step3'> Step3. Debugging </h2>
+
+TBA.
