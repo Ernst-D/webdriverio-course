@@ -1,13 +1,13 @@
-const LoginPage = require('../pageobjects/login.page');
-const SecurePage = require('../pageobjects/secure.page');
+import loginPage from '../pageobjects/login.page';
+import securePage from '../pageobjects/secure.page';
 
 describe('My Login application', () => {
     it('should login with valid credentials', async () => {
-        await LoginPage.open();
+        await loginPage.open();
 
-        await LoginPage.login('tomsmith', 'SuperSecretPassword!');
-        await expect(SecurePage.flashAlert).toBeExisting();
-        await expect(SecurePage.flashAlert).toHaveTextContaining(
+        await loginPage.login('tomsmith', 'SuperSecretPassword!');
+        await expect(securePage.flashAlert).toBeExisting();
+        await expect(securePage.flashAlert).toHaveTextContaining(
             'You logged into a secure area!');
     });
 });
