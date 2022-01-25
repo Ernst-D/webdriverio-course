@@ -14,6 +14,7 @@
 
 - [Step1](#step1) 
 - [Step2](#step2) 
+- [Step3](#step3)
 
 
 <h2 id='step1'>Step1. Setup</h2>
@@ -89,6 +90,8 @@ But if we take a look at screenshot - we will see that there is no pictures uplo
 
 So our can we consider that our test is flaky? Not actually, but we should wait until our page will be fully loaded. 
 We will fix this in a steps to come.
+
+****
 
 <h2 id='step2'> Step2. Tooling </h2>
 
@@ -200,3 +203,43 @@ module.exports = {
 After that we can convert our files to ES modules, just go to the `example.e2e.js` and imported files and convert them. 
 
 **NOTE:** We shall stay with ES modules because it will provide us the latest features of JS and also it can show us some specific situation when we had to use both versions of JS modules.
+
+****
+
+<h2 id='step3'> Step3. Debugging </h2>
+
+In order to investigate errors in our tests caused by test flakiness or test failures -  we need to have ability to dive through our code.
+
+Debugging is our primary weapon for code inspection.
+
+There are two ways you can debug your code in WebdriverIO:
+
+1. You can use [`debug` method](https://webdriver.io/docs/api/browser/debug). Just put `await browser.debug()` in some place of the test and when execution comes to this moment - your code will enter to [REPL mode](https://webdriver.io/docs/repl). Also you will be able to interact with launched browser.
+
+    **Important note:**
+        
+    - If you want to stay more time in a REPL mode - create environment variable which presence will increase test framework timeout (we're use Mocha, default -  60000ms. But there could be a case when you use Cucumber/Jasmine). Example for Mocha:
+
+    Enter this variable in your terminal (Windows, PowerShell):
+    ```powershell
+    $env:WDIO_DEBUG=1
+    ```
+    Or (Unix):
+    ```shell
+    export WDIO_DEBUG=1
+    ```
+    Then find  edit `wdio.conf.js` with next segment:
+    ```js
+        mochaOpts: {
+            ui: 'bdd',
+            timeout: process.env.WDIO_DEBUG == 1 ? 70000 : 60000
+        },
+    ```
+
+    Depending upon existence of WDIO_DEBUG env variable - we configure default timeout. This check also can be very useful for some debug purposes, for example we can change logic in some commands.
+
+
+2. You can use [JavaScript Debug Terminal](https://code.visualstudio.com/docs/nodejs/nodejs-debugging) for nodejs projects (WebdriverIO runs in nodejs). Just open this terminal, put breakpoints somewhere in your code and run command in terminal. When execution comes to your breakpoint - it will stop and you will be able to walk through your code step by step.
+
+
+You can try both of these methods in `example.e2e.js`. 
