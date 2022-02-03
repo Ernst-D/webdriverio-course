@@ -16,6 +16,7 @@
 - [Step2](#step2) 
 - [Step3](#step3)
 - [Step4](#step4)
+- [Step5](#step5)
 
 
 <h2 id='step1'>Step1. Setup</h2>
@@ -280,3 +281,47 @@ describe("User common flow",() => {
 We should move all logic and interaction into separate modules, so our test cases will contain only description of user flow. The rest of the refactored you can check in repo. Note, that we added `waitForPageLoad` method for Dashboard Page: it serves us as a custom wait for ui to be loaded and assertion that page is loaded.
 
 Further, we will move actions, that we can perform on a page, and page objects, which describes elements of ui, to separate modules.
+
+<h2 id='step5'>Step5. Wait for elements </h2>
+
+Waiting for elements is one of key things when working 
+on modern web app e2e tests. WebDriver doesn't have built-in waitings for web elements (it has only wait for page to be loaded), but WebDriverIO API has special methods for waitings. Check out element section in [API docs](https://webdriver.io/docs/api). 
+
+Other thing worth mentioning - [waitUntil method](https://webdriver.io/docs/api/element/waitUntil), you need to remember, that condition **must always return boolean**, otherwise your test will fail due to test framework timeout.
+
+This command gives you a lot versatility on how you can wait. For example, we need to wait until some text will be changed on the page:
+
+```js
+await browser.waitUntil(async()=>{
+    let text = await ui.elem("//h1").getText();
+    return (text.includes("Your income & balances are") && !text.includes("being verified"));
+})
+```
+
+**<h3>Task. Write your first full e2e test</h3>**
+
+We need to practically reinforce the knowledge we gained in the previous steps. So we will create e2e test for our real-world-application. The test case is next (it is written in a Gherkin language):
+
+```gherkin
+Feature: User creates request transaction
+
+    Some description needs to be added  
+
+    Scenario: User logs in
+        Given User is on the login page
+        When It logs as Tavares_Barrows
+        Then It sees the home page
+        And User sees his username
+    
+    Scenario: User creates request transaction
+        Given User is on the home page
+        And User creates new transaction to user Giovanna74
+        When It fill amount of money and adds note on transaction page
+        And It clicks on a request button
+        Then User see request in notifications
+        And User can see request in Mine transactions
+```
+
+One user logs in to the app, creates a request for transaction to another user, and that second user logs in and see the request for the transaction.
+
+Use page object pattern and, probably, you gonna need to use waiting for elements.
