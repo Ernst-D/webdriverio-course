@@ -15,6 +15,7 @@
 - [Step1](#step1) 
 - [Step2](#step2) 
 - [Step3](#step3)
+- [Step4](#step4)
 
 
 <h2 id='step1'>Step1. Setup</h2>
@@ -242,4 +243,40 @@ There are two ways you can debug your code in WebdriverIO:
 2. You can use [JavaScript Debug Terminal](https://code.visualstudio.com/docs/nodejs/nodejs-debugging) for nodejs projects (WebdriverIO runs in nodejs). Just open this terminal, put breakpoints somewhere in your code and run command in terminal. When execution comes to your breakpoint - it will stop and you will be able to walk through your code step by step.
 
 
-You can try both of these methods in `example.e2e.js`. 
+You can try both of these methods in `example.e2e.js`.
+
+<h2 id='step4'>Step4. Page Object Model</h2>
+
+"When you write tests against a web page, you need to refer to elements within that web page in order to click links and determine what's displayed. However, if you write tests that manipulate the HTML elements directly your tests will be brittle to changes in the UI. A page object wraps an HTML page, or fragment, with an application-specific API, allowing you to manipulate page elements without digging around in the HTML." 
+
+This is a direct passage from Martin Fowler's article about Page Object. You better read whole [article](https://martinfowler.com/bliki/PageObject.html). But lets refactor our `login.spec.js`; From this view:
+```js
+describe("Test suite",() => {
+    it("Test case",async() => {
+        await browser.url("/");
+        let usernameInput = await $('#username');
+        let passwordInput = await $("#password");
+        await usernameInput.waitForDisplayed();
+        await usernameInput.setValue("Tavares_Barrows");
+        await passwordInput.setValue("s3cret");
+        await $('[data-test="signin-submit"]').waitForEnabled();
+        await $('[data-test="signin-submit"]').click();
+        await $('[data-test="transaction-list"]').waitForDisplayed();
+        await browser.saveScreenshot("./image.png");
+    });
+});
+```
+To this:
+```js
+describe("User common flow",() => {
+    it("can login and see transaction list",async() => {
+        await loginPage.open();
+        await loginPage.login();
+        await dashboardPage.waitForPageLoad();
+    });
+});
+```
+
+We should move all logic and interaction into separate modules, so our test cases will contain only description of user flow. The rest of the refactored you can check in repo. Note, that we added `waitForPageLoad` method for Dashboard Page: it serves us as a custom wait for ui to be loaded and assertion that page is loaded.
+
+Further, we will move actions, that we can perform on a page, and page objects, which describes elements of ui, to separate modules.
