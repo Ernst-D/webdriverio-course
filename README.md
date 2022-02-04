@@ -17,6 +17,7 @@
 - [Step3](#step3)
 - [Step4](#step4)
 - [Step5](#step5)
+- [Step6](#step6)
 
 
 <h2 id='step1'>Step1. Setup</h2>
@@ -325,3 +326,26 @@ Feature: User creates request transaction
 One user logs in to the app, creates a request for transaction to another user, and that second user logs in and see the request for the transaction.
 
 Use page object pattern and, probably, you gonna need to use waiting for elements.
+
+<h2 id='step6'>Step6. Test specs management </h2>
+
+For this step, you probably gonna use this [guideline](https://webdriver.io/docs/organizingsuites/). 
+
+In this step we will talk about test specs management: how to select specific test spec, how to run specific test, how to group test cases and how to exclude test cases.
+
+First of all, lets create a copy of our `login.spec.js` - `copy.login.spec.js` and copy the content of login spec. Great, now we have two specs (or three, depends on a completion of task in *step5*). 
+
+You also might notice that now we have `myaccount.spec.js` which will logs in user, navigates it to the user settings and play with it's email (these changes would be great to verify through network assertions, but this kind of assertions will be covered later). 
+
+Now we can start talk about specs management. First thing we should mention - is a `specs` property in `wdio.conf.js`. It defines the root directory for your tests. So when you run `npx wdio ./wdio.conf.js` - it will launch those spec files, which directory are `./test/specs.
+
+Okay, now we know where from WDIO-CLI takes test files. 
+Let's try to run specific test spec. We will use `--spec` flag and our terminal command should looks like this: 
+```shell
+npx wdio ./wdio.conf.js --spec test/specs/cypress-rwa/myaccount.spec.js
+```
+You can use this flag to run one or more test specs. For, example:
+```shell
+npx wdio ./wdio.conf.js --spec test/specs/cypress-rwa/myaccount.spec.js --spec ./test/specs/cypress-rwa/login.spec.js
+```
+
