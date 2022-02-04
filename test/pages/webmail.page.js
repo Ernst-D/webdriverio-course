@@ -2,7 +2,7 @@ import BasePage from "./base.page";
 
 const webmailUrl = "https://ej2.syncfusion.com/showcase/typescript/webmail";
 
-class LoginPage extends BasePage{
+class WebmailPage extends BasePage{
     constructor(pageUrl){
         super();
         this.url = pageUrl;
@@ -21,7 +21,7 @@ class LoginPage extends BasePage{
     }
 
 }
-export default new LoginPage(webmailUrl);
+export default new WebmailPage(webmailUrl);
 
 // export default {
 //     messageComponent: '[class="e-content"] [class="e-list-item e-level-1"]',
