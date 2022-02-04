@@ -13,6 +13,10 @@ class DashboardPage extends BasePage {
     get userAvatars(){
         return $$('[class="MuiAvatar-img"]');
     }
+
+    get userSettings(){
+        return $('[data-test="sidenav-user-settings"]');
+    }
     
     async waitForPageLoad(){
         return await this.transactionList.waitForDisplayed();
