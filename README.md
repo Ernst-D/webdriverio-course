@@ -17,6 +17,7 @@
 - [Step3](#step3)
 - [Step4](#step4)
 - [Step5](#step5)
+- [Step6](#step6)
 
 
 <h2 id='step1'>Step1. Setup</h2>
@@ -325,3 +326,72 @@ Feature: User creates request transaction
 One user logs in to the app, creates a request for transaction to another user, and that second user logs in and see the request for the transaction.
 
 Use page object pattern and, probably, you gonna need to use waiting for elements.
+
+<h2 id='step6'>Step6. Test specs management </h2>
+
+For this step, you probably gonna use this [guideline](https://webdriver.io/docs/organizingsuites/). 
+
+In this step we will talk about test specs management: how to select specific test spec, how to run specific test, how to group test cases and how to exclude test cases.
+
+First of all, lets create a copy of our `login.spec.js` - `copy.login.spec.js` and copy the content of login spec. Great, now we have two specs (or three, depends on a completion of task in *step5*). Also we created new spec which test [Webmail](https://ej2.syncfusion.com/showcase/typescript/webmail) application (`./test/specs/webmail`)
+
+You also might notice that now we have `myaccount.spec.js` which will logs in user, navigates it to the user settings and play with it's email (these changes would be great to verify through network assertions, but this kind of assertions will be covered later). 
+
+Now we can start talk about specs management. First thing we should mention - is a `specs` property in `wdio.conf.js`. It defines the root directory for your tests. So when you run `npx wdio ./wdio.conf.js` - it will launch those spec files, which directory are `./test/specs.
+
+<h3>Run specific test suite </h3>
+
+Okay, now we know where from WDIO-CLI takes test files. 
+Let's try to run specific test spec. We will use `--spec` flag and our terminal command should looks like this: 
+```shell
+npx wdio ./wdio.conf.js --spec test/specs/cypress-rwa/myaccount.spec.js
+```
+You can use this flag to run one or more test specs. For, example:
+```shell
+npx wdio ./wdio.conf.js --spec test/specs/cypress-rwa/myaccount.spec.js --spec ./test/specs/webmail/inbox.spec.js
+```
+
+<h3>Run specific group of test suites </h3>
+
+In `wdio.conf.js` we can specify group of test. For example, now we have tests for cypress-rwa and for webmail app. We would like to have such cli flag that would allow us to run tests related only to the specific app. Let's add next property `suites` to `wdio.conf.js`: 
+```js
+    suites:{
+        webmail:[
+            './test/specs/webmail/**'
+        ],
+        cypress_rwa:[
+            'test/specs/cypress-rwa/**'
+        ]
+    }
+```
+With this you can type, for example: 
+```shell
+npm run test -- --suite webmail
+```
+
+With `--suite` flag - you will be able to run specific set of tests cases. You also can add some more tests into the suite. Let's create new suite which will contain webmail specs and one more spec from cypress_rwa:
+```js
+mix:[
+    './test/specs/webmail/**',
+    'test/specs/cypress-rwa/login.spec.js'
+    ],
+```
+
+<h3>Exclude specific test from suites </h3>
+
+For example, we don't want to run cypress spec, which we included to the `mix` suite, we can excluded by `--exclude` flag:
+```shell
+npm run test -- --suite mix --exclude test/specs/cypress-rwa/**
+``` 
+
+<h3>Run specific test from spec file </h3>
+
+Sometimes we need to run specific test case from spec, so we need to use `--mochaOpts.grep "some text in name of the test case"`. For example:
+```shell
+npm run test -- --spec test/specs/webmail/inbox.spec.js --mochaOpts.grep "can check profile sidebar"
+```
+As you can see, we have also have tests which contains `skip` - this is a way we can skip some test cases from spec. 
+
+Regarding to `--mochaOpts.grep` - you can just provide string template for specific test, for example `--mochaOpts.grep "can check "`.
+
+**Important note:** if you want to use this feature further - you **must** be sure that state of the test in your suite doesn't depend from the previous one (unless this is a first test in a suite).
