@@ -11,13 +11,17 @@ describe("Inbox test suite",() => {
         let profileName = await webmailPage.inboxName.getText();
         expect(profileName).toEqual(username);
     });
-    it("can see content of message",() => {
+    it.skip("can see content of message",() => {
        // TBA
     });
-    it("can create and send message",() => {
+    it.skip("can create and send message",() => {
        // TBA
     });
-    it("can check profile sidebar",() => {
-       // TBA
+    it("can check profile sidebar", async () => {
+       await webmailPage.inboxName.click();
+       let settingsLinks = await $$('[class="profile-content"] [class="about-anchor"]');
+       settingsLinks.forEach(link => {
+           expect(link).toBeExisting();
+       }); 
     });    
 });

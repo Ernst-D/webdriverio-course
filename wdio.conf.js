@@ -1,3 +1,6 @@
+/**
+ * @type {WebdriverIO.Config}
+ */
 exports.config = {
     //
     // ====================
@@ -23,6 +26,18 @@ exports.config = {
     specs: [
         './test/specs/**/*.js'
     ],
+    suites:{
+        webmail:[
+            './test/specs/webmail/**'
+        ],
+        mix:[
+            './test/specs/webmail/**',
+            'test/specs/cypress-rwa/login.spec.js'
+        ],
+        cypress_rwa:[
+            'test/specs/cypress-rwa/**'
+        ]
+    },
     // Patterns to exclude.
     exclude: [
         // 'path/to/excluded/files'
