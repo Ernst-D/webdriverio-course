@@ -353,4 +353,45 @@ npx wdio ./wdio.conf.js --spec test/specs/cypress-rwa/myaccount.spec.js --spec .
 
 <h3>Run specific group of test suites </h3>
 
-In `wdio.conf.js` we can specify group of test. For example, now we have tests for cypress-rwa and for webmail app.
+In `wdio.conf.js` we can specify group of test. For example, now we have tests for cypress-rwa and for webmail app. We would like to have such cli flag that would allow us to run tests related only to the specific app. Let's add next property `suites` to `wdio.conf.js`: 
+```js
+    suites:{
+        webmail:[
+            './test/specs/webmail/**'
+        ],
+        cypress_rwa:[
+            'test/specs/cypress-rwa/**'
+        ]
+    }
+```
+With this you can type, for example: 
+```shell
+npm run test -- --suite webmail
+```
+
+With `--suite` flag - you will be able to run specific set of tests cases. You also can add some more tests into the suite. Let's create new suite which will contain webmail specs and one more spec from cypress_rwa:
+```js
+mix:[
+    './test/specs/webmail/**',
+    'test/specs/cypress-rwa/login.spec.js'
+    ],
+```
+
+<h3>Exclude specific test from suites </h3>
+
+For example, we don't want to run cypress spec, which we included to the `mix` suite, we can excluded by `--exclude` flag:
+```shell
+npm run test -- --suite mix --exclude test/specs/cypress-rwa/**
+``` 
+
+<h3>Run specific test from spec file </h3>
+
+Sometimes we need to run specific test case from spec, so we need to use `--mochaOpts.grep "some text in name of the test case"`. For example:
+```shell
+npm run test -- --spec test/specs/webmail/inbox.spec.js --mochaOpts.grep "can check profile sidebar"
+```
+As you can see, we have also have tests which contains `skip` - this is a way we can skip some test cases from spec. 
+
+Regarding to `--mochaOpts.grep` - you can just provide string template for specific test, for example `--mochaOpts.grep "can check "`.
+
+**Important note:** if you want to use this feature further - you **must** be sure that state of the test in your suite doesn't depend from the previous one (unless this is a first test in a suite).
