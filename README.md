@@ -18,6 +18,7 @@
 - [Step4](#step4)
 - [Step5](#step5)
 - [Step6](#step6)
+- [Step7](#step7)
 
 
 <h2 id='step1'>Step1. Setup</h2>
@@ -395,3 +396,27 @@ As you can see, we have also have tests which contains `skip` - this is a way we
 Regarding to `--mochaOpts.grep` - you can just provide string template for specific test, for example `--mochaOpts.grep "can check "`.
 
 **Important note:** if you want to use this feature further - you **must** be sure that state of the test in your suite doesn't depend from the previous one (unless this is a first test in a suite).
+
+<h2 id='step7'>Step7. WDIO CLI and configs </h2>
+
+WebdriverIO provides ability to override (actually, extend) existing configs. You can create several configs which will satisfy your conditions and then use in test runs with WDIO CLI.
+
+Say, you need to run your tests against Firefox browser and maximize window before start (if you don't have Firefox - [download it](https://www.mozilla.org/en/firefox/new/)).  
+
+Let's create `firefox.conf.js`:
+```js
+const config = require("./wdio.conf").config;
+
+config.capabilities = [{
+    maxInstances:5,
+    browserName:"firefox"
+}];
+config.services = ["selenium-standalone"];
+
+config.beforeTest = async function(){
+    await browser.maximizeWindow();
+};
+
+exports.config = config;
+```
+
