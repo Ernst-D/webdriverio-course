@@ -399,6 +399,8 @@ Regarding to `--mochaOpts.grep` - you can just provide string template for speci
 
 <h2 id='step7'>Step7. WDIO CLI and configs </h2>
 
+**NOTE:** For this step you will need to install Firefox and make sure that you have Java installed on your machine (run `java -version` to check whether you have it).
+
 WebdriverIO provides ability to override (actually, extend) existing configs. You can create several configs which will satisfy your conditions and then use in test runs with WDIO CLI.
 
 Say, you need to run your tests against Firefox browser and maximize window before start (if you don't have Firefox - [download it](https://www.mozilla.org/en/firefox/new/)).  
@@ -420,3 +422,8 @@ config.beforeTest = async function(){
 exports.config = config;
 ```
 
+We import base config and override / extend it with logic we need. We overwrote capabilities of base config (we will use Firefox instead of Chrome), overwrote service property (instead of using `chromedriver-service`) with `selenium-standalone`. We also extend base config with hook `beforeTest` where tell our browser to maximize window's size, and then we export modified config.
+
+Run `npx wdio firefox.conf.js --suite webmail ` - it will open Firefox, set max window size and launch your webmail suite. It might take time to setup browsers. It's okay, `selenium-standalone` need time to setup service for cross browser testing and in "Advanced. Cross browser testing" we will describe how this issues can be solved.
+
+TODO: add config which will extend firefox config and describe why you should extend base config very carefully if you do that third time.
