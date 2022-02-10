@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx wdio ./wdio.conf.js"
+    "test": "npx wdio ./test/config/wdio.conf.js",
+    "test:firefox":"npx wdio ./test/config/firefox.conf.js",
+    "test:extended":"npx wdio test/config/new.conf.js"
   },
   "keywords": [],
   "author": "",
