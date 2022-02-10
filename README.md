@@ -399,6 +399,8 @@ Regarding to `--mochaOpts.grep` - you can just provide string template for speci
 
 <h2 id='step7'>Step7. WDIO CLI and configs </h2>
 
+<h3> Extend / overwrite existing config </h3>
+
 **NOTE:** For this step you will need to install Firefox and make sure that you have Java installed on your machine (run `java -version` to check whether you have it).
 
 WebdriverIO provides ability to override (actually, extend) existing configs. You can create several configs which will satisfy your conditions and then use in test runs with WDIO CLI.
@@ -426,4 +428,26 @@ We import base config and override / extend it with logic we need. We overwrote 
 
 Run `npx wdio firefox.conf.js --suite webmail ` - it will open Firefox, set max window size and launch your webmail suite. It might take time to setup browsers. It's okay, `selenium-standalone` need time to setup service for cross browser testing and in "Advanced. Cross browser testing" we will describe how this issues can be solved.
 
-TODO: add config which will extend firefox config and describe why you should extend base config very carefully if you do that third time.
+<h3> Extend / overwrite extended config </h3>
+
+First of all, create `config` folder in `test` and move all the `*.conf.js` files to `config`. Then we need to fix and some new npm scripts in `package.json`:
+```json
+  "scripts": {
+    "test": "npx wdio ./test/config/wdio.conf.js",
+    "test:firefox":"npx wdio ./test/config/firefox.conf.js",
+    "test:extended":"npx wdio test/config/new.conf.js"
+  },
+```
+
+Create `shared.conf.js` there with next content:
+```js
+const config = require("./shared.conf").default;
+
+config.afterTest = async function(){
+    let browserName = driver.capabilities.browserName;
+    await browser.saveScreenshot(`./new_conf-${browserName}.png`);
+};
+
+exports.config = config;
+```
+
