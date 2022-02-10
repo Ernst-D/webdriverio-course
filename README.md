@@ -18,6 +18,7 @@
 - [Step4](#step4)
 - [Step5](#step5)
 - [Step6](#step6)
+- [Step7](#step7)
 
 
 <h2 id='step1'>Step1. Setup</h2>
@@ -395,3 +396,61 @@ As you can see, we have also have tests which contains `skip` - this is a way we
 Regarding to `--mochaOpts.grep` - you can just provide string template for specific test, for example `--mochaOpts.grep "can check "`.
 
 **Important note:** if you want to use this feature further - you **must** be sure that state of the test in your suite doesn't depend from the previous one (unless this is a first test in a suite).
+
+<h2 id='step7'>Step7. WDIO CLI and configs </h2>
+
+<h3> Extend / overwrite existing config </h3>
+
+**NOTE:** For this step you will need to install Firefox and make sure that you have Java installed on your machine (run `java -version` to check whether you have it).
+
+WebdriverIO provides ability to override (actually, extend) existing configs. You can create several configs which will satisfy your conditions and then use in test runs with WDIO CLI.
+
+Say, you need to run your tests against Firefox browser and maximize window before start (if you don't have Firefox - [download it](https://www.mozilla.org/en/firefox/new/)).  
+
+Let's create `firefox.conf.js`:
+```js
+const config = require("./wdio.conf").config;
+
+config.capabilities = [{
+    maxInstances:5,
+    browserName:"firefox"
+}];
+config.services = ["selenium-standalone"];
+
+config.beforeTest = async function(){
+    await browser.maximizeWindow();
+};
+
+exports.config = config;
+```
+
+We import base config and override / extend it with logic we need. We overwrote capabilities of base config (we will use Firefox instead of Chrome), overwrote service property (instead of using `chromedriver-service`) with `selenium-standalone`. We also extend base config with hook `beforeTest` where tell our browser to maximize window's size, and then we export modified config.
+
+Run `npx wdio firefox.conf.js --suite webmail ` - it will open Firefox, set max window size and launch your webmail suite. It might take time to setup browsers. It's okay, `selenium-standalone` need time to setup service for cross browser testing and in "Advanced. Cross browser testing" we will describe how this issues can be solved.
+
+<h3> Extend / overwrite extended config </h3>
+
+First of all, create `config` folder in `test` and move all the `*.conf.js` files to `config`. Then we need to fix and some new npm scripts in `package.json`:
+```json
+  "scripts": {
+    "test": "npx wdio ./test/config/wdio.conf.js",
+    "test:firefox":"npx wdio ./test/config/firefox.conf.js",
+    "test:extended":"npx wdio test/config/new.conf.js"
+  },
+```
+
+Create `shared.conf.js` there with next content:
+```js
+const config = require("./shared.conf").default;
+
+config.afterTest = async function(){
+    let browserName = driver.capabilities.browserName;
+    await browser.saveScreenshot(`./new_conf-${browserName}.png`);
+};
+
+exports.config = config;
+```
+
+Let's try to run test with our extended and overwritten config: `npm run test:extended -- --spec test/specs/cypress-rwa/myaccount.spec.js`. You will see that after test run in a project root dir there will be two screenshots: `new_conf-chrome.png` and `new_conf-firefox.png`. That will mean that tests worked out correctly with our "third time extended" config. 
+
+**WHY** we should do such thing carefully? Because excessive inheritance adds additional coupleness to our code. If we try to change something in shared config - these new feature can break some of the config which use the shared one. Avoid situation where you need to do inheritance fourth time since it will be almost imposible to track down problems caused by editing some of the base configs.
