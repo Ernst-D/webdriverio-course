@@ -19,6 +19,7 @@
 - [Step5](#step5)
 - [Step6](#step6)
 - [Step7](#step7)
+- [Step8](#step8)
 
 
 <h2 id='step1'>Step1. Setup</h2>
@@ -454,3 +455,7 @@ exports.config = config;
 Let's try to run test with our extended and overwritten config: `npm run test:extended -- --spec test/specs/cypress-rwa/myaccount.spec.js`. You will see that after test run in a project root dir there will be two screenshots: `new_conf-chrome.png` and `new_conf-firefox.png`. That will mean that tests worked out correctly with our "third time extended" config. 
 
 **WHY** we should do such thing carefully? Because excessive inheritance adds additional coupleness to our code. If we try to change something in shared config - these new feature can break some of the config which use the shared one. Avoid situation where you need to do inheritance fourth time since it will be almost imposible to track down problems caused by editing some of the base configs.
+
+<h2 id='step8'>Step8. Reporting </h2>
+
+TODO
