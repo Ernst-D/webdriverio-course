@@ -458,4 +458,12 @@ Let's try to run test with our extended and overwritten config: `npm run test:ex
 
 <h2 id='step8'>Step8. Reporting </h2>
 
-TODO
+Reporting is one of the key things in test automation. You can't show the output from console to non-technical people in your team, because it doesn't show how exactly your tests finished. You can't see the trend of how your tests are improves / degradates by console output. 
+
+WebdriverIO has a lot of reporters to be used with. We will use one of the most popular - [Allure](https://webdriver.io/docs/allure-reporter) (you can also see what reporters you can use there). 
+
+<h3>Setup</h3>
+
+First of all, you need to check whether you have installed Java on your machine (run `java -version` in terminal, if doesn't recognize `java` - install it). 
+
+After this, install [allure-commandline](https://www.npmjs.com/package/allure-commandline) globally. Check that everything goes by `allure --help` in terminal. If it shows the list of commands - great. 
