@@ -1,3 +1,6 @@
+const fs = require("fs").promises;
+const allureReporter = require("@wdio/allure-reporter").default;
+
 /**
  * @type {WebdriverIO.Config}
  */
@@ -151,7 +154,7 @@ exports.config = {
         ['spec',{}],
         ['allure', {
             outputDir: './reports/allure-results',
-            disableWebdriverStepsReporting: false,
+            disableWebdriverStepsReporting: true,
             disableWebdriverScreenshotsReporting: true,
         }]
     ],
@@ -242,16 +245,15 @@ exports.config = {
     // },
     /**
      * Function to be executed after a test (in Mocha/Jasmine only)
-     * @param {Object}  test             test object
-     * @param {Object}  context          scope object the test was executed with
-     * @param {Error}   result.error     error object in case the test fails, otherwise `undefined`
-     * @param {Any}     result.result    return object of test function
-     * @param {Number}  result.duration  duration of test
-     * @param {Boolean} result.passed    true if test has passed, otherwise false
-     * @param {Object}  result.retries   informations to spec related retries, e.g. `{ attempts: 0, limit: 0 }`
      */
-    // afterTest: function(test, context, { error, result, duration, passed, retries }) {
-    // },
+    afterTest: async function(test, context, result) {
+        if(!result.passed){
+            let screenshotPath = "./error.png"; 
+            await browser.saveScreenshot(screenshotPath);
+            let screenshotBuffer = await fs.readFile(screenshotPath);
+            allureReporter.addAttachment("error.png",screenshotBuffer,"image/png");
+        }
+    },
 
 
     /**
