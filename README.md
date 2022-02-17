@@ -467,3 +467,38 @@ WebdriverIO has a lot of reporters to be used with. We will use one of the most 
 First of all, you need to check whether you have installed Java on your machine (run `java -version` in terminal, if doesn't recognize `java` - install it). 
 
 After this, install [allure-commandline](https://www.npmjs.com/package/allure-commandline) globally. Check that everything goes by `allure --help` in terminal. If it shows the list of commands - great. 
+
+Check `package.json` whether you have installed `@wdio/allure-reporter`, if not - just do `npm i @wdio/allure-reporter -D`.
+
+Okay, we're done with setup. 
+
+<h3>Initialization</h3>
+
+If we want to add new reporter - we need to add new entry to `reporers` property. Our reporters section will looks like this:
+```js
+    reporters: [
+        ['spec',{}],
+        ['allure', {
+            outputDir: './reports/allure-results',
+            disableWebdriverStepsReporting: true,
+            disableWebdriverScreenshotsReporting: true,
+        }]
+    ],
+```
+
+We added `allure` as a reporter to WDIO test runnner and basic reporting since we're going to implement our own screenshot saving mechanism. 
+
+Let's try some spec test and see whether we have some new test results. Run `npm run test -- --spec test/specs/webmail/inbox.spec.js`. After test run we see that `reports/allure-results` has showed up. 
+
+Now it's time to see our new fancy reports. We need to add command to package json next script:
+```json
+  "reports":"cd reports && allure serve"
+```
+It will move to `reports` folder and then create reports with allure-commandline. 
+
+**NOTE:**
+Every time you run the test - it will generate new test data there, so you will have history of your test runs. These history eventually can take up to few gigabytes, so don't forget to remove *reports* folder time to time. Or you can create script / add hook to `base,conf.js` which will run every time before test launch. 
+
+<h3> Screenshots </h3>
+
+
