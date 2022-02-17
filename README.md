@@ -501,4 +501,44 @@ Every time you run the test - it will generate new test data there, so you will 
 
 <h3> Screenshots </h3>
 
+Whenever our test fails - we need to have information why, when, and, if possible, how does it fail. Initialy, we can have only few lines of code, stacktrace, which can point at what place of code the error occured. Okay, but what was the state of application under the test? One of the common solution how detect the state of application during error - is to take screenshot. We could've record the video but that will be the next step.
 
+Let's add feature of taking screenshots on test error. Firstly, we need t take deep dive into *hooks*. 
+
+*Hooks* in WDIO config - functions, where you can add additional functionality to your test framework.From simple console logs to advanced test manipulation during runtime. 
+
+*Hooks* are also function properties which can be redefined when you override existing config.  
+
+For screenshots on failed test we will use `afterTest` hook. First of all, import necessary dependencies:
+
+```js
+const fs = require("fs").promises;
+const allureReporter = require("@wdio/allure-reporter").default;
+```
+
+We're going to use promisified `fs` module, because don't want to use callbacks and stay fashionable. We're also need to import reporter module.
+
+Then, add next code to `base.conf.js` to afterTest property:
+```js
+    afterTest: async function(test, context, result) {
+        if(!result.passed){
+            let screenshotPath = "./error.png"; 
+            await browser.saveScreenshot(screenshotPath);
+            let screenshotBuffer = await fs.readFile(screenshotPath);
+            allureReporter.addAttachment("error.png",screenshotBuffer,"image/png");
+        }
+    },
+```
+If our test fails - we call the command which save the screenshot in specific path by specific name (for now - just in a root dir). Then we transfer this photo into intermediate data format ([Buffer](https://nodejs.org/api/buffer.html#buffer)) and then attach this data using reporter API (we're also need to specify [mime type](https://en.wikipedia.org/wiki/Media_type)).
+
+To test our new feature we can by next way: add 
+```js
+expect(true).toBeFalsy()
+```
+at the end of the any test case you run. It will break your test and `afterTest` hook will be triggered.
+
+Except of allure-reporter - you can use a bit simple one such as [spec reporter](https://webdriver.io/docs/spec-reporter).
+
+**<h3>Task. Add video reporting</h3>**
+
+Follow the description of this [Video reporter](https://webdriver.io/docs/wdio-video-reporter) and implement it in your test framework.
