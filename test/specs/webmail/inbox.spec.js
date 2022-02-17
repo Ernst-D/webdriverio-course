@@ -22,6 +22,7 @@ describe("Inbox test suite",() => {
        let settingsLinks = await $$('[class="profile-content"] [class="about-anchor"]');
        settingsLinks.forEach(link => {
            expect(link).toBeExisting();
-       }); 
+       });
+       expect(true).toBeFalsy(); 
     });    
 });

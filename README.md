@@ -19,6 +19,7 @@
 - [Step5](#step5)
 - [Step6](#step6)
 - [Step7](#step7)
+- [Step8](#step8)
 
 
 <h2 id='step1'>Step1. Setup</h2>
@@ -454,3 +455,90 @@ exports.config = config;
 Let's try to run test with our extended and overwritten config: `npm run test:extended -- --spec test/specs/cypress-rwa/myaccount.spec.js`. You will see that after test run in a project root dir there will be two screenshots: `new_conf-chrome.png` and `new_conf-firefox.png`. That will mean that tests worked out correctly with our "third time extended" config. 
 
 **WHY** we should do such thing carefully? Because excessive inheritance adds additional coupleness to our code. If we try to change something in shared config - these new feature can break some of the config which use the shared one. Avoid situation where you need to do inheritance fourth time since it will be almost imposible to track down problems caused by editing some of the base configs.
+
+<h2 id='step8'>Step8. Reporting </h2>
+
+Reporting is one of the key things in test automation. You can't show the output from console to non-technical people in your team, because it doesn't show how exactly your tests finished. You can't see the trend of how your tests are improves / degradates by console output. 
+
+WebdriverIO has a lot of reporters to be used with. We will use one of the most popular - [Allure](https://webdriver.io/docs/allure-reporter) (you can also see what reporters you can use there). 
+
+<h3>Setup</h3>
+
+First of all, you need to check whether you have installed Java on your machine (run `java -version` in terminal, if doesn't recognize `java` - install it). 
+
+After this, install [allure-commandline](https://www.npmjs.com/package/allure-commandline) globally. Check that everything goes by `allure --help` in terminal. If it shows the list of commands - great. 
+
+Check `package.json` whether you have installed `@wdio/allure-reporter`, if not - just do `npm i @wdio/allure-reporter -D`.
+
+Okay, we're done with setup. 
+
+<h3>Initialization</h3>
+
+If we want to add new reporter - we need to add new entry to `reporers` property. Our reporters section will looks like this:
+```js
+    reporters: [
+        ['spec',{}],
+        ['allure', {
+            outputDir: './reports/allure-results',
+            disableWebdriverStepsReporting: true,
+            disableWebdriverScreenshotsReporting: true,
+        }]
+    ],
+```
+
+We added `allure` as a reporter to WDIO test runnner and basic reporting since we're going to implement our own screenshot saving mechanism. 
+
+Let's try some spec test and see whether we have some new test results. Run `npm run test -- --spec test/specs/webmail/inbox.spec.js`. After test run we see that `reports/allure-results` has showed up. 
+
+Now it's time to see our new fancy reports. We need to add command to package json next script:
+```json
+  "reports":"cd reports && allure serve"
+```
+It will move to `reports` folder and then create reports with allure-commandline. 
+
+**NOTE:**
+Every time you run the test - it will generate new test data there, so you will have history of your test runs. These history eventually can take up to few gigabytes, so don't forget to remove *reports* folder time to time. Or you can create script / add hook to `base,conf.js` which will run every time before test launch. 
+
+<h3> Screenshots </h3>
+
+Whenever our test fails - we need to have information why, when, and, if possible, how does it fail. Initialy, we can have only few lines of code, stacktrace, which can point at what place of code the error occured. Okay, but what was the state of application under the test? One of the common solution how detect the state of application during error - is to take screenshot. We could've record the video but that will be the next step.
+
+Let's add feature of taking screenshots on test error. Firstly, we need t take deep dive into *hooks*. 
+
+*Hooks* in WDIO config - functions, where you can add additional functionality to your test framework.From simple console logs to advanced test manipulation during runtime. 
+
+*Hooks* are also function properties which can be redefined when you override existing config.  
+
+For screenshots on failed test we will use `afterTest` hook. First of all, import necessary dependencies:
+
+```js
+const fs = require("fs").promises;
+const allureReporter = require("@wdio/allure-reporter").default;
+```
+
+We're going to use promisified `fs` module, because don't want to use callbacks and stay fashionable. We're also need to import reporter module.
+
+Then, add next code to `base.conf.js` to afterTest property:
+```js
+    afterTest: async function(test, context, result) {
+        if(!result.passed){
+            let screenshotPath = "./error.png"; 
+            await browser.saveScreenshot(screenshotPath);
+            let screenshotBuffer = await fs.readFile(screenshotPath);
+            allureReporter.addAttachment("error.png",screenshotBuffer,"image/png");
+        }
+    },
+```
+If our test fails - we call the command which save the screenshot in specific path by specific name (for now - just in a root dir). Then we transfer this photo into intermediate data format ([Buffer](https://nodejs.org/api/buffer.html#buffer)) and then attach this data using reporter API (we're also need to specify [mime type](https://en.wikipedia.org/wiki/Media_type)).
+
+To test our new feature we can by next way: add 
+```js
+expect(true).toBeFalsy()
+```
+at the end of the any test case you run. It will break your test and `afterTest` hook will be triggered.
+
+Except of allure-reporter - you can use a bit simple one such as [spec reporter](https://webdriver.io/docs/spec-reporter).
+
+**<h3>Task. Add video reporting</h3>**
+
+Follow the description of this [Video reporter](https://webdriver.io/docs/wdio-video-reporter) and implement it in your test framework.

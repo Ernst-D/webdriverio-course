@@ -132,3 +132,4 @@ dist
 # misc stuff 
 .env
 *.png
+reports
