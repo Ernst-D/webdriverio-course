@@ -1,4 +1,4 @@
-const config = require("./wdio.conf").config;
+const {config} = require("./wdio.conf");
 
 config.capabilities = [{
     maxInstances:5,

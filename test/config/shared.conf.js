@@ -1,4 +1,5 @@
-const sharedConf = require("./wdio.conf").config;
+const {config} = require("./wdio.conf");
+const sharedConf = config;
 
 sharedConf.maxInstances = 1;
 
