@@ -12,14 +12,15 @@
 
 ## Table of Contents
 
-- [Step1](#step1) 
-- [Step2](#step2) 
-- [Step3](#step3)
-- [Step4](#step4)
-- [Step5](#step5)
-- [Step6](#step6)
-- [Step7](#step7)
-- [Step8](#step8)
+- [Step1. Setup](#step1) 
+- [Step2. Tooling](#step2) 
+- [Step3. Debugging](#step3)
+- [Step4. Page Object Model](#step4)
+- [Step5. Wait for elements](#step5)
+- [Step6. Test specs management](#step6)
+- [Step7. WDIO CLI and configs](#step7)
+- [Step8. Reporting](#step8)
+- [Step9. Parametrized tests](#step9)
 
 
 <h2 id='step1'>Step1. Setup</h2>
@@ -542,3 +543,5 @@ Except of allure-reporter - you can use a bit simple one such as [spec reporter]
 **<h3>Task. Add video reporting</h3>**
 
 Follow the description of this [Video reporter](https://webdriver.io/docs/wdio-video-reporter) and implement it in your test framework.
+
+<h2 id='step9'>Step9. Reporting </h2>
