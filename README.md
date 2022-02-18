@@ -544,4 +544,27 @@ Except of allure-reporter - you can use a bit simple one such as [spec reporter]
 
 Follow the description of this [Video reporter](https://webdriver.io/docs/wdio-video-reporter) and implement it in your test framework.
 
-<h2 id='step9'>Step9. Reporting </h2>
+<h2 id='step9'>Step9. Parametrized tests </h2>
+
+Sometimes we need to run the same test but with specific set. That's where parameterized tests takes the stage. 
+
+Let's write simple test spec that will type several values into the google search.
+```js
+describe("Parametrized test suite",() => {
+    const testData = ["cypress","playwright","webdriverio"];
+
+    testData.forEach(data => {
+        it("can search automation frameworks in google", async () => {
+            await browser.url("https://google.com");
+            await $("[name='q']").setValue(data);
+            await browser.keys(["Enter"]);
+            await $(`[data-async-context="query:${data}"] > div`).waitForDisplayed();
+            await browser.saveScreenshot(`./${data}.png`);
+        });
+    });
+});
+```
+
+This is one of the many implementations of parameterized tests for Mocha framework. We created array with some test data and then iterate over it. we could've create object and then iterate by key-value pair (this example you can also find in `param.spec.js`).
+
+**NOTE:** It is a good practice to store test data somewhere in external module and import it to our test specs.
