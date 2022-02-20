@@ -211,8 +211,18 @@ exports.config = {
      * @param {Array.<String>} specs        List of spec file paths that are to be run
      * @param {Object}         browser      instance of created browser/device session
      */
-    // before: function (capabilities, specs) {
-    // },
+    before: function (capabilities, specs) {
+        browser.addCommand("waitAndClick", async function () {
+            await this.waitForExist();   
+            await this.scrollIntoView({
+                behavior:"smooth",
+                block:"center",
+                inline:"center"
+            });      
+            await this.waitForDisplayed();   
+            await this.click();
+        }, true);
+    },
     /**
      * Runs before a WebdriverIO command gets executed.
      * @param {String} commandName hook command name
@@ -224,8 +234,8 @@ exports.config = {
      * Hook that gets executed before the suite starts
      * @param {Object} suite suite details
      */
-    // beforeSuite: function (suite) {
-    // },
+    beforeSuite: function (suite) {
+    },
     /**
      * Function to be executed before a test (in Mocha/Jasmine) starts.
      */
