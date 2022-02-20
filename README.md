@@ -574,18 +574,13 @@ This is one of the many implementations of parameterized tests for Mocha framewo
 
 When your test framework will have a pretty decent scale - there might be will be a necesity to re-use some of the similar piece of code which you use in different tests. This could be a custom `wait for something happened on your page`, or custom click which uses browser context to execute, or some debug command, which works when specific env variable is set. 
 
-WebdriverIO has ability to define custom commands with help of [addCommand](https://webdriver.io/api/addcommand) method. With help of this method - you can extend either `WebdriverIO.Browser` object or `WebdriverIO.Element` object. You can find more in [this guide](http://webdriver.io/guides/customcommands).
+WebdriverIO has ability to define custom commands with help of [addCommand](https://webdriver.io/docs/api/browser/addCommand) method. With help of this method - you can extend either `WebdriverIO.Browser` object or `WebdriverIO.Element` object. You can find more in [this guide](https://webdriver.io/docs/customcommands).
 
 Let's add our first custom command `waitAndClick`. Uncomment `before` hook in a `wdio.conf.js` and modify it to the next way:
 
 ```js
     before: function (capabilities, specs) {
         browser.addCommand("waitAndClick", async function () {
-            /**
-             * We wait until it will be in DOM, scrolling to viewport based on WebAPI algorithm
-             * Waiting until the element will be displayed based on WebDriver algorithm (result SOMETIMES can be invalid, more https://www.w3.org/TR/webdriver/#element-displayedness)
-             * And then clicking.
-             */
             await this.waitForExist();   
             await this.scrollIntoView({
                 behavior:"smooth",
@@ -593,10 +588,10 @@ Let's add our first custom command `waitAndClick`. Uncomment `before` hook in a 
                 inline:"center"
             });      
             await this.waitForDisplayed();   
-            await this.forceClick();
+            await this.click();
         }, true);
     },
 ```
 
-We wait until it will be in DOM, scrolling to viewport based on [WebAPI algorithm](developer mozila scrollIntoView method) ->
-Then waiting until the element will be displayed based on WebDriver algorithm (result SOMETIMES can be invalid, more https://www.w3.org/TR/webdriver/#element-displayedness) -> And then clicking.
+We wait until it will be in DOM, scrolling to viewport based on [WebAPI command](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView) ->
+Then waiting until the element will be displayed based on WebDriver algorithm (result SOMETIMES can be invalid, more about it [here](https://www.w3.org/TR/webdriver/#element-displayedness)) -> And then clicking.
