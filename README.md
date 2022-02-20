@@ -595,3 +595,16 @@ Let's add our first custom command `waitAndClick`. Uncomment `before` hook in a 
 
 We wait until it will be in DOM, scrolling to viewport based on [WebAPI command](https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView) ->
 Then waiting until the element will be displayed based on WebDriver algorithm (result SOMETIMES can be invalid, more about it [here](https://www.w3.org/TR/webdriver/#element-displayedness)) -> And then clicking.
+
+This approach is has a lot of cons: you can define command in one place (you can create separate module with such commands and then import it into the main config); you can create specific custom commands, which will relate to specific WDIO config, and it's easy to call these commands in your code.
+
+The downside of such approach: you can't get normal autocomplete for your custom command (can be solved if you use TypeScript); it's much harder to debug such commands, because debugger doesn't go through direct implementation of your command; hard to manage commands if you overwrite hooks in inherited config. 
+
+There are a few ways you could help yourself with custom commands:
+
+1. Define separated module with custom commands wrappers (see, `./utils/custom.commands.js`). With this approach the usage of custom commands will be a bit more transparent. Also, in this case you can add additional description to your commands with [JSDoc](https://jsdoc.app/).
+2. Implement custom commands **without** `browser.addCommand` method. You can still implement custom commands in separated module. In that case, the debug of this commands will be more transparent since debugger will go through the implementation and it will much more easier to put breakpoints and see what's happened.
+
+<h3>Extra</h3>
+
+You can [define your own WebDriver commands](https://webdriver.io/docs/customcommands#add-more-webdriver-commands), but this is more advanced approach when described above ways is not enough for you. For example, you want to operate with your own set of WebDriver commands and create more sophisticated custom commands with them.
